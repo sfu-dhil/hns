@@ -9,12 +9,26 @@
 /vendor/
 ###< symfony/framework-bundle ###
 
-###> symfony/phpunit-bridge ###
-.phpunit.result.cache
-/phpunit.xml
-###< symfony/phpunit-bridge ###
-
 ###> phpunit/phpunit ###
 /phpunit.xml
 .phpunit.result.cache
 ###< phpunit/phpunit ###
+
+# Bundles
+/public/js/jquery.collection.js
+/templates/jquery.collection.html.twig
+
+# Editors
+.idea
+
+# Yarn packages.
+/public/yarn
+/config/deploy.yaml
+
+# Misc data
+*.sql
+/data
+/lib
+
+# Computed files
+src/.preload.php

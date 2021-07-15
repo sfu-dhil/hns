@@ -1,3 +1,12 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+nines_user:
+    resource: '@NinesUserBundle/Resources/config/routes.yaml'
+
+nines_editor:
+    type: annotation
+    prefix: /editor
+    resource: '@NinesEditorBundle/Controller'
+
+nines_media:
+    type: annotation
+    prefix: /media
+    resource: '@NinesMediaBundle/Controller'
