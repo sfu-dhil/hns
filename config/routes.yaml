@@ -1,6 +1,11 @@
 nines_user:
     resource: '@NinesUserBundle/Resources/config/routes.yaml'
 
+nines_dc:
+    type: annotation
+    prefix: /dc
+    resource: '@NinesDublinCoreBundle/Controller'
+
 nines_editor:
     type: annotation
     prefix: /editor
