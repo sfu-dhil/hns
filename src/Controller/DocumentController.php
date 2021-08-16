@@ -13,7 +13,6 @@ namespace App\Controller;
 use App\Entity\Document;
 use App\Form\DocumentType;
 use App\Repository\DocumentRepository;
-
 use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;
 use Nines\DublinCoreBundle\Repository\ElementRepository;
 use Nines\UtilBundle\Controller\PaginatorTrait;
@@ -155,6 +154,7 @@ class DocumentController extends AbstractController implements PaginatorAwareInt
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('success', 'The updated document has been saved.');
+
             return $this->redirectToRoute('document_show', ['id' => $document->getId()]);
         }
 

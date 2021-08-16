@@ -13,12 +13,8 @@ namespace App\Form;
 use App\Entity\Document;
 use App\Entity\DocumentSet;
 
-use App\Form\Mapper\DublinCoreMapper;
-use Nines\DublinCoreBundle\Entity\Element;
-use Nines\DublinCoreBundle\Repository\ElementRepository;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Nines\DublinCoreBundle\Form\Mapper\DublinCoreMapper;
+use Nines\DublinCoreBundle\Form\ValueType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Tetranz\Select2EntityBundle\Form\DataTransformer\EntityToPropertyTransformer;
@@ -27,18 +23,13 @@ use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 /**
  * Document form.
  */
-class DocumentType extends AbstractType {
-    /**
-     * @var ElementRepository
-     */
-    private ElementRepository $repo;
+class DocumentType extends ValueType {
     private DublinCoreMapper $mapper;
 
     /**
      * Add form fields to $builder.
      */
     public function buildForm(FormBuilderInterface $builder, array $options) : void {
-
         $builder->add('documentSet', Select2EntityType::class, [
             'label' => 'Document Set',
             'class' => DocumentSet::class,
@@ -51,27 +42,7 @@ class DocumentType extends AbstractType {
             ],
             'transformer' => EntityToPropertyTransformer::class,
         ]);
-
-        foreach($this->repo->indexQuery()->execute() as $element) {
-            /** @var Element $element */
-            $builder->add($element->getName(), CollectionType::class, [
-                'label' => $element->getLabel(),
-                'entry_type' => TextType::class,
-                'required' => false,
-                'allow_add' => true,
-                'allow_delete' => true,
-                'delete_empty' => true,
-                'entry_options' => [
-                    'label' => false,
-                ],
-                'attr' => [
-                    'help_block' => $element->getDescription(),
-                    'class' => 'collection-simple',
-                ],
-                'mapped' => false,
-            ]);
-        }
-        dump($builder->getDataMapper());
+        parent::buildForm($builder, $options);
         $builder->setDataMapper($this->mapper);
     }
 
@@ -88,19 +59,9 @@ class DocumentType extends AbstractType {
     }
 
     /**
-     * @param ElementRepository $repo
      * @required
      */
-    public function setElementRepository(ElementRepository $repo) {
-        $this->repo = $repo;
-    }
-
-    /**
-     * @param DublinCoreMapper $mapper
-     * @required
-     */
-    public function setDublinCoreMapper(DublinCoreMapper $mapper) {
+    public function setDublinCoreMapper(DublinCoreMapper $mapper) : void {
         $this->mapper = $mapper;
     }
-
 }

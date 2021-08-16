@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\DocumentSet;
-use App\Form\DocumentSetType;
+use Nines\DublinCoreBundle\Form\DocumentSetType;
 use App\Repository\DocumentSetRepository;
 
 use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;
