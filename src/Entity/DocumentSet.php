@@ -36,4 +36,41 @@ class DocumentSet extends AbstractTerm {
         parent::__construct();
         $this->documents = new ArrayCollection();
     }
+
+    public function getCompilation() : ?Compilation {
+        return $this->compilation;
+    }
+
+    public function setCompilation(?Compilation $compilation) : self {
+        $this->compilation = $compilation;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Document[]
+     */
+    public function getDocuments() : Collection {
+        return $this->documents;
+    }
+
+    public function addDocument(Document $document) : self {
+        if ( ! $this->documents->contains($document)) {
+            $this->documents[] = $document;
+            $document->setDocumentSet($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDocument(Document $document) : self {
+        if ($this->documents->removeElement($document)) {
+            // set the owning side to null (unless already changed)
+            if ($document->getDocumentSet() === $this) {
+                $document->setDocumentSet(null);
+            }
+        }
+
+        return $this;
+    }
 }

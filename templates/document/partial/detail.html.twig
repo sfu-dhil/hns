@@ -1,0 +1,36 @@
+<table class='table table-bordered table-condensed table-hover table-striped'>
+    <tbody>
+
+        <tr>
+            <th>DocumentSet</th>
+            <td>
+                {% if document.documentSet %}
+                    <a href='{{ path("document_set_show", {"id": document.documentSet.id}) }}'>{{ document.documentSet }}</a>
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <th>Created</th>
+            <td>{{ document.created|date }}</td>
+        </tr>
+        <tr>
+            <th>Updated</th>
+            <td>{{ document.updated|date }}</td>
+        </tr>
+    </tbody>
+</table>
+
+{% if document.values|length > 0 %}
+<h2>Metadata</h2>
+    <dl class='dl-horizontal'>
+        {% for element in elements %}
+            {% set values = document.getValues(element.name) %}
+            {% if values|length > 0 %}
+                <dt>{{ element.label }}</dt>
+                {% for value in values %}
+                <dd>{{ value }}</dd>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    </dl>
+{% endif %}

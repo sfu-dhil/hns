@@ -37,19 +37,4 @@ class DocumentRepository extends ServiceEntityRepository {
             ->getQuery()
         ;
     }
-
-    /**
-     * @param string $q
-     *
-     * @return Collection|Document[]
-     */
-    public function typeaheadQuery($q) {
-        throw new RuntimeException('Not implemented yet.');
-        $qb = $this->createQueryBuilder('document');
-        $qb->andWhere('document.column LIKE :q');
-        $qb->orderBy('document.column', 'ASC');
-        $qb->setParameter('q', "{$q}%");
-
-        return $qb->getQuery()->execute();
-    }
 }

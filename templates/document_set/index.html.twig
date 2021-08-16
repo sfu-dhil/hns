@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Document Set List{% endblock %}
+
+{% block pageheader %}
+    <h1>Document Set List</h1>
+    <p class="count">
+        Displaying {{ document_sets|length }} document_sets of {{ document_sets.getTotalItemCount }} total.
+    </p>
+{% endblock %}
+
+{% block body %}
+
+    <div class='btn-toolbar pull-right'>
+        <div class='btn-group'>
+            {% if is_granted('ROLE_CONTENT_ADMIN') %}
+                <a href="{{ path('document_set_new') }}" class="btn btn-default">
+                    <span class="glyphicon glyphicon-plus"></span> New </a>
+            {% endif %}
+
+            <a href="{{ path('document_set_search') }}" class="btn btn-default">
+                <span class="glyphicon glyphicon-search"></span> Search </a>
+        </div>
+    </div>
+
+    {% embed 'document_set/partial/table.html.twig' %}
+    {% endembed %}
+
+    <div class="navigation">
+        {{ knp_pagination_render(document_sets) }}
+    </div>
+
+{% endblock %}

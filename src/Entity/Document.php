@@ -12,6 +12,8 @@ namespace App\Entity;
 
 use App\Repository\DocumentRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Nines\DublinCoreBundle\Entity\ValueInterface;
+use Nines\DublinCoreBundle\Entity\ValueTrait;
 use Nines\MediaBundle\Entity\PdfContainerInterface;
 use Nines\MediaBundle\Entity\PdfContainerTrait;
 use Nines\UtilBundle\Entity\AbstractEntity;
@@ -19,8 +21,11 @@ use Nines\UtilBundle\Entity\AbstractEntity;
 /**
  * @ORM\Entity(repositoryClass=DocumentRepository::class)
  */
-class Document extends AbstractEntity implements PdfContainerInterface {
+class Document extends AbstractEntity implements PdfContainerInterface, ValueInterface {
     use PdfContainerTrait;
+    use ValueTrait {
+        ValueTrait::__construct as value_constructor;
+    }
 
     /**
      * @var DocumentSet
@@ -30,12 +35,27 @@ class Document extends AbstractEntity implements PdfContainerInterface {
 
     public function __construct() {
         parent::__construct();
+        $this->value_constructor();
     }
 
     /**
      * {@inheritDoc}
      */
     public function __toString() : string {
-        // TODO: Implement __toString() method.
+        $titles = $this->getValues('dc_title');
+        if($titles && count($titles) > 0) {
+            return implode(" ", $titles->toArray());
+        }
+        return "Untitled #" . $this->getId();
+    }
+
+    public function getDocumentSet() : ?DocumentSet {
+        return $this->documentSet;
+    }
+
+    public function setDocumentSet(?DocumentSet $documentSet) : self {
+        $this->documentSet = $documentSet;
+
+        return $this;
     }
 }

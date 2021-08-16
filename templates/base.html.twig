@@ -9,8 +9,7 @@
 
         <link rel="stylesheet" href="{{ asset('yarn/bootstrap3/dist/css/bootstrap.min.css') }}">
         <link rel="stylesheet" href="{{ asset('yarn/bootstrap3/dist/css/bootstrap-theme.min.css') }}">
-        <link rel="stylesheet" href="{{ asset('yarn/select2/dist/css/select2.min.css') }}"
-        ">
+        <link rel="stylesheet" href="{{ asset('yarn/select2/dist/css/select2.min.css') }}">
         <link rel="stylesheet" href="{{ asset('yarn/select2-bootstrap-css/select2-bootstrap.min.css') }}">
         <link rel="stylesheet" href='{{ asset('yarn/jquery-ui-dist/jquery-ui.css') }}'>
 
@@ -39,6 +38,7 @@
                 <div id="navbar" class="collapse navbar-collapse">
                     {{ knp_menu_render('main') }}
                     {% if is_granted('ROLE_ADMIN') %}{{ knp_menu_render('nines_media') }}{% endif %}
+                    {% if is_granted('ROLE_ADMIN') %}{{ knp_menu_render('nines_dc_elements') }}{% endif %}
                     {{ knp_menu_render('nines_user_nav') }}
                 </div><!--/.nav-collapse -->
             </div>

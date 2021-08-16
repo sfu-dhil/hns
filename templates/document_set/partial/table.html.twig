@@ -1,0 +1,34 @@
+<table class="table table-bordered table-condensed table-hover table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Label</th>
+            <th>Description</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        {% for document_set in document_sets %}
+            <tr>
+                <td>
+                    <a href="{{ path('document_set_show', { 'id': document_set.id }) }}">
+                        {{ document_set.id }}
+                    </a>
+                </td>
+                <td>
+                    {{ document_set.name }}
+                </td>
+
+                <td>
+                    {{ document_set.label }}
+                </td>
+
+                <td>
+                    {{ document_set.description|raw }}
+                </td>
+
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

@@ -30,4 +30,31 @@ class Compilation extends AbstractTerm {
         parent::__construct();
         $this->documentSets = new ArrayCollection();
     }
+
+    /**
+     * @return Collection|DocumentSet[]
+     */
+    public function getDocumentSets() : Collection {
+        return $this->documentSets;
+    }
+
+    public function addDocumentSet(DocumentSet $documentSet) : self {
+        if ( ! $this->documentSets->contains($documentSet)) {
+            $this->documentSets[] = $documentSet;
+            $documentSet->setCompilation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDocumentSet(DocumentSet $documentSet) : self {
+        if ($this->documentSets->removeElement($documentSet)) {
+            // set the owning side to null (unless already changed)
+            if ($documentSet->getCompilation() === $this) {
+                $documentSet->setCompilation(null);
+            }
+        }
+
+        return $this;
+    }
 }

@@ -1,0 +1,49 @@
+<table class='table table-bordered table-condensed table-hover table-striped'>
+    <tbody>
+        <tr>
+            <th>Name</th>
+            <td>
+                {{ compilation.name }}
+            </td>
+        </tr>
+        <tr>
+            <th>Label</th>
+            <td>
+                {{ compilation.label }}
+            </td>
+        </tr>
+        <tr>
+            <th>Description</th>
+            <td>
+                {{ compilation.description|raw }}
+            </td>
+        </tr>
+
+        <tr>
+            <th>DocumentSet</th>
+            <td>
+                {% if compilation.documentSets|length > 0 %}
+                    <ul>
+                        {% for document_set in compilation.documentSets %}
+                            <li>
+                                <a href='{{ path("document_set_show", {"id":document_set.id }) }}'>
+                                    {{ document_set }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <th>Created</th>
+            <td>{{ compilation.created|date }}</td>
+        </tr>
+        <tr>
+            <th>Updated</th>
+            <td>{{ compilation.updated|date }}</td>
+        </tr>
+    </tbody>
+</table>
+
+
