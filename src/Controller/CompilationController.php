@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Compilation;
-use Nines\DublinCoreBundle\Form\CompilationType;
+use App\Form\CompilationType;
 use App\Repository\CompilationRepository;
 
 use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;

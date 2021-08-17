@@ -20,7 +20,7 @@
         </tr>
 
         <tr>
-            <th>DocumentSet</th>
+            <th>Document Sets</th>
             <td>
                 {% if compilation.documentSets|length > 0 %}
                     <ul>
@@ -33,6 +33,13 @@
                         {% endfor %}
                     </ul>
                 {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <th>Links</th>
+            <td>
+                {% embed '@NinesMedia/link/partial/list.html.twig' with {'entity': compilation} %}
+                {% endembed %}
             </td>
         </tr>
         <tr>

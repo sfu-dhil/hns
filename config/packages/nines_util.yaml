@@ -3,4 +3,4 @@ nines_util:
     routing:
         - { class: App\Entity\Document, route: document_show }
         - { class: App\Entity\DocumentSet, route: document_set_show }
-        - { class: App\Entity\Collection, route: collection_show }
+        - { class: App\Entity\Compilation, route: compilation_show }

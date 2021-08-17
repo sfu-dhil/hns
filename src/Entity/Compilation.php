@@ -14,12 +14,19 @@ use App\Repository\CompilationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Nines\MediaBundle\Entity\LinkableInterface;
+use Nines\MediaBundle\Entity\LinkableTrait;
 use Nines\UtilBundle\Entity\AbstractTerm;
 
 /**
  * @ORM\Entity(repositoryClass=CompilationRepository::class)
  */
-class Compilation extends AbstractTerm {
+class Compilation extends AbstractTerm implements LinkableInterface {
+
+    use LinkableTrait {
+        LinkableTrait::__construct as linkable_constructor;
+    }
+
     /**
      * @var Collection|DocumentSet[]
      * @ORM\OneToMany(targetEntity="DocumentSet", mappedBy="compilation")
@@ -28,6 +35,7 @@ class Compilation extends AbstractTerm {
 
     public function __construct() {
         parent::__construct();
+        $this->linkable_constructor();
         $this->documentSets = new ArrayCollection();
     }
 

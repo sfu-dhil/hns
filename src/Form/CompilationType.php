@@ -12,6 +12,8 @@ namespace App\Form;
 
 use App\Entity\Compilation;
 
+use Nines\MediaBundle\Form\LinkableType;
+use Nines\MediaBundle\Form\Mapper\LinkableMapper;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -22,6 +24,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * Compilation form.
  */
 class CompilationType extends AbstractType {
+    private LinkableMapper $mapper;
+
     /**
      * Add form fields to $builder.
      */
@@ -48,6 +52,16 @@ class CompilationType extends AbstractType {
                 'class' => 'tinymce',
             ],
         ]);
+        LinkableType::add($builder, $options);
+        $builder->setDataMapper($this->mapper);
+    }
+
+    /**
+     * @param LinkableMapper $mapper
+     * @required
+     */
+    public function setLinkableMapper(LinkableMapper $mapper) {
+        $this->mapper = $mapper;
     }
 
     /**
