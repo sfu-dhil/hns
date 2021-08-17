@@ -22,7 +22,9 @@ use Nines\UtilBundle\Entity\AbstractEntity;
  * @ORM\Entity(repositoryClass=DocumentRepository::class)
  */
 class Document extends AbstractEntity implements PdfContainerInterface, ValueInterface {
-    use PdfContainerTrait;
+    use PdfContainerTrait {
+        PdfContainerTrait::__construct as pdf_constructor;
+    }
     use ValueTrait {
         ValueTrait::__construct as value_constructor;
     }
@@ -35,6 +37,7 @@ class Document extends AbstractEntity implements PdfContainerInterface, ValueInt
 
     public function __construct() {
         parent::__construct();
+        $this->pdf_constructor();
         $this->value_constructor();
     }
 

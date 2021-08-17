@@ -15,9 +15,12 @@ use App\Form\DocumentType;
 use App\Repository\DocumentRepository;
 use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;
 use Nines\DublinCoreBundle\Repository\ElementRepository;
+use Nines\MediaBundle\Controller\PdfControllerTrait;
+use Nines\MediaBundle\Entity\Pdf;
 use Nines\UtilBundle\Controller\PaginatorTrait;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -29,6 +32,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class DocumentController extends AbstractController implements PaginatorAwareInterface {
     use PaginatorTrait;
+
+    use PdfControllerTrait;
 
     /**
      * @Route("/", name="document_index", methods={"GET"})
@@ -180,4 +185,35 @@ class DocumentController extends AbstractController implements PaginatorAwareInt
 
         return $this->redirectToRoute('document_index');
     }
+
+    /**
+     * @Route("/{id}/new_pdf", name="document_new_pdf", methods={"GET", "POST"})
+     * @IsGranted("ROLE_CONTENT_ADMIN")
+     *
+     * @Template("@NinesMedia/pdf/new.html.twig")
+     */
+    public function newPdf(Request $request, Document $document) {
+        return $this->newPdfAction($request, $document, 'document_show');
+    }
+
+    /**
+     * @Route("/{id}/edit_pdf/{pdf_id}", name="document_edit_pdf", methods={"GET", "POST"})
+     * @IsGranted("ROLE_CONTENT_ADMIN")
+     * @ParamConverter("pdf", options={"id": "pdf_id"})
+     *
+     * @Template("@NinesMedia/pdf/edit.html.twig")
+     */
+    public function editPdf(Request $request, Document $document, Pdf $pdf) {
+        return $this->editPdfAction($request, $document, $pdf, 'document_show');
+    }
+
+    /**
+     * @Route("/{id}/delete_pdf/{pdf_id}", name="document_delete_pdf", methods={"DELETE"})
+     * @ParamConverter("pdf", options={"id": "pdf_id"})
+     * @IsGranted("ROLE_CONTENT_ADMIN")
+     */
+    public function deletePdf(Request $request, Document $document, Pdf $pdf) {
+        return $this->deletePdfAction($request, $document, $pdf, 'document_show');
+    }
+
 }
