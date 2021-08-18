@@ -15,7 +15,9 @@ use App\Form\DocumentType;
 use App\Repository\DocumentRepository;
 use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;
 use Nines\DublinCoreBundle\Repository\ElementRepository;
+use Nines\MediaBundle\Controller\ImageControllerTrait;
 use Nines\MediaBundle\Controller\PdfControllerTrait;
+use Nines\MediaBundle\Entity\Image;
 use Nines\MediaBundle\Entity\Pdf;
 use Nines\UtilBundle\Controller\PaginatorTrait;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -34,6 +36,7 @@ class DocumentController extends AbstractController implements PaginatorAwareInt
     use PaginatorTrait;
 
     use PdfControllerTrait;
+    use ImageControllerTrait;
 
     /**
      * @Route("/", name="document_index", methods={"GET"})
@@ -216,4 +219,33 @@ class DocumentController extends AbstractController implements PaginatorAwareInt
         return $this->deletePdfAction($request, $document, $pdf, 'document_show');
     }
 
+    /**
+     * @Route("/{id}/new_image", name="document_new_image", methods={"GET", "POST"})
+     * @IsGranted("ROLE_CONTENT_ADMIN")
+     *
+     * @Template("@NinesMedia/image/new.html.twig")
+     */
+    public function newImage(Request $request, Document $document) {
+        return $this->newImageAction($request, $document, 'document_show');
+    }
+
+    /**
+     * @Route("/{id}/edit_image/{image_id}", name="document_edit_image", methods={"GET", "POST"})
+     * @IsGranted("ROLE_CONTENT_ADMIN")
+     * @ParamConverter("image", options={"id": "image_id"})
+     *
+     * @Template("@NinesMedia/image/edit.html.twig")
+     */
+    public function editImage(Request $request, Document $document, Image $image) {
+        return $this->editImageAction($request, $document, $image, 'document_show');
+    }
+
+    /**
+     * @Route("/{id}/delete_image/{image_id}", name="document_delete_image", methods={"DELETE"})
+     * @ParamConverter("image", options={"id": "image_id"})
+     * @IsGranted("ROLE_CONTENT_ADMIN")
+     */
+    public function deleteImage(Request $request, Document $document, Image $image) {
+        return $this->deleteImageAction($request, $document, $image, 'document_show');
+    }
 }

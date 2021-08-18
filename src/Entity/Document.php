@@ -14,6 +14,10 @@ use App\Repository\DocumentRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Nines\DublinCoreBundle\Entity\ValueInterface;
 use Nines\DublinCoreBundle\Entity\ValueTrait;
+use Nines\MediaBundle\Entity\ImageContainerInterface;
+use Nines\MediaBundle\Entity\ImageContainerTrait;
+use Nines\MediaBundle\Entity\LinkableInterface;
+use Nines\MediaBundle\Entity\LinkableTrait;
 use Nines\MediaBundle\Entity\PdfContainerInterface;
 use Nines\MediaBundle\Entity\PdfContainerTrait;
 use Nines\UtilBundle\Entity\AbstractEntity;
@@ -21,12 +25,18 @@ use Nines\UtilBundle\Entity\AbstractEntity;
 /**
  * @ORM\Entity(repositoryClass=DocumentRepository::class)
  */
-class Document extends AbstractEntity implements PdfContainerInterface, ValueInterface {
+class Document extends AbstractEntity implements PdfContainerInterface, ValueInterface, LinkableInterface, ImageContainerInterface {
     use PdfContainerTrait {
         PdfContainerTrait::__construct as pdf_constructor;
     }
     use ValueTrait {
         ValueTrait::__construct as value_constructor;
+    }
+    use LinkableTrait {
+        LinkableTrait::__construct as link_constructor;
+    }
+    use ImageContainerTrait {
+        ImageContainerTrait::__construct as image_constructor;
     }
 
     /**
@@ -39,6 +49,8 @@ class Document extends AbstractEntity implements PdfContainerInterface, ValueInt
         parent::__construct();
         $this->pdf_constructor();
         $this->value_constructor();
+        $this->link_constructor();
+        $this->image_constructor();
     }
 
     /**
