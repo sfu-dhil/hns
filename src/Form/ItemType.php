@@ -17,10 +17,6 @@ use Nines\DublinCoreBundle\Form\Mapper\DublinCoreMapper;
 use Nines\DublinCoreBundle\Form\ValueType;
 use Nines\DublinCoreBundle\Repository\ElementRepository;
 use Nines\MediaBundle\Form\PdfType;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
@@ -30,10 +26,13 @@ use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
  */
 class ItemType extends PdfType {
     private DublinCoreMapper $dcm;
+
     private ElementRepository $elementRepository;
 
     /**
      * Add form fields to $builder.
+     *
+     * @param null|mixed $label
      */
     public function buildForm(FormBuilderInterface $builder, array $options, $label = null) : void {
         parent::buildForm($builder, $options);
@@ -54,14 +53,14 @@ class ItemType extends PdfType {
     /**
      * @required
      */
-    public function setElementRepository(ElementRepository $elementRepository) {
+    public function setElementRepository(ElementRepository $elementRepository) : void {
         $this->elementRepository = $elementRepository;
     }
 
     /**
      * @required
      */
-    public function setDublinCoreMapper(DublinCoreMapper $dcm) {
+    public function setDublinCoreMapper(DublinCoreMapper $dcm) : void {
         $this->dcm = $dcm;
     }
 

@@ -1,34 +1,5 @@
-  <table class="table table-bordered table-condensed table-hover table-striped">
-      <thead>
-          <tr>
-              <th>ID</th>                                       <th>Name</th>
-                                                         <th>Label</th>
-                                                         <th>Description</th>
-                  
-          </tr>
-      </thead>
-      <tbody>
-      {% for scrapbook in scrapbooks %}
-          <tr>
-              <td>
-                  <a href="{{ path('scrapbook_show', { 'id': scrapbook.id }) }}">
-                      {{ scrapbook.id }}
-                  </a>
-              </td>
-              <td>
-                  {{ scrapbook.name }}
-              </td>
-          
-              <td>
-                  {{ scrapbook.label }}
-              </td>
-          
-              <td>
-                  {{ scrapbook.description|raw }}
-              </td>
-          
-          </tr>
-      {% endfor %}
-      </tbody>
-  </table>
-  
+{% embed '@NinesUtil/term/partial/index.html.twig' with {
+    'terms': scrapbooks,
+    'path': 'scrapbook_show'
+} %}
+{% endembed %}

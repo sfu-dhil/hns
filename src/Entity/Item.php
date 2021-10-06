@@ -18,6 +18,9 @@ use Nines\MediaBundle\Entity\AbstractPdf;
 
 /**
  * @ORM\Entity(repositoryClass=ItemRepository::class)
+ * @ORM\Table(indexes={
+ *     @ORM\Index(name="item_text_ft", columns={"text"}, flags={"fulltext"})
+ * })
  */
 class Item extends Abstractpdf implements ValueInterface {
     use ValueTrait {
@@ -26,9 +29,15 @@ class Item extends Abstractpdf implements ValueInterface {
     }
 
     /**
+     * @var ?string
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $text;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Scrapbook", inversedBy="items")
      */
-    private Scrapbook $scrapbook;
+    private ?Scrapbook $scrapbook;
 
     public function __construct() {
         parent::__construct();
@@ -49,6 +58,16 @@ class Item extends Abstractpdf implements ValueInterface {
 
     public function setScrapbook(?Scrapbook $scrapbook) : self {
         $this->scrapbook = $scrapbook;
+
+        return $this;
+    }
+
+    public function getText() : ?string {
+        return $this->text;
+    }
+
+    public function setText(?string $text) : self {
+        $this->text = $text;
 
         return $this;
     }

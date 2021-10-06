@@ -1,59 +1,58 @@
-  <table class="table table-bordered table-condensed table-hover table-striped">
-      <thead>
-          <tr>
-              <th>ID</th>                                       <th>Public</th>
-                                                         <th>Original Name</th>
-                                                         <th>Path</th>
-                                                         <th>Mime Type</th>
-                                                         <th>File Size</th>
-                                                         <th>Thumb Path</th>
-                                                         <th>Description</th>
-                                                         <th>License</th>
-                  
-          </tr>
-      </thead>
-      <tbody>
-      {% for item in items %}
-          <tr>
-              <td>
-                  <a href="{{ path('item_show', { 'id': item.id }) }}">
-                      {{ item.id }}
-                  </a>
-              </td>
-              <td>{% if item.public %}Yes{% else %}No{% endif %}</td>
+<table class="table table-bordered table-condensed table-hover table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Public</th>
+            <th>Original Name</th>
+            <th>Path</th>
+            <th>Mime Type</th>
+            <th>File Size</th>
+            <th>Thumb Path</th>
+            <th>Description</th>
+            <th>License</th>
 
-          
-          
-              <td>
-                  {{ item.originalName }}
-              </td>
-          
-              <td>
-                  {{ item.path }}
-              </td>
-          
-              <td>
-                  {{ item.mimeType }}
-              </td>
-          
-              <td>
-                  {{ item.fileSize }}
-              </td>
-          
-              <td>
-                  {{ item.thumbPath }}
-              </td>
-          
-              <td>
-                  {{ item.description|raw }}
-              </td>
-          
-              <td>
-                  {{ item.license|raw }}
-              </td>
-          
-          </tr>
-      {% endfor %}
-      </tbody>
-  </table>
-  
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in items %}
+            <tr>
+                <td>
+                    <a href="{{ path('item_show', { 'id': item.id }) }}">
+                        {{ item.id }}
+                    </a>
+                </td>
+                <td>{% if item.public %}Yes{% else %}No{% endif %}</td>
+
+
+                <td>
+                    {{ item.originalName }}
+                </td>
+
+                <td>
+                    {{ item.path }}
+                </td>
+
+                <td>
+                    {{ item.mimeType }}
+                </td>
+
+                <td>
+                    {{ item.fileSize }}
+                </td>
+
+                <td>
+                    {{ item.thumbPath }}
+                </td>
+
+                <td>
+                    {{ item.description|raw }}
+                </td>
+
+                <td>
+                    {{ item.license|raw }}
+                </td>
+
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

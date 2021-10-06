@@ -5,13 +5,9 @@
     <div class="col-sm-10">
         <input type="submit" value="Save" class="btn btn-primary" />
         {% if scrapbook.id is null %}
-        <a href="{{ path('scrapbook_index') }}" class="btn btn-warning">
-            Cancel
-        </a>
+            <a href="{{ path('scrapbook_index') }}" class="btn btn-warning"> Cancel </a>
         {% else %}
-            <a href="{{ path('scrapbook_show', { 'id': scrapbook.id }) }}" class="btn btn-warning">
-                Cancel
-            </a>
+            <a href="{{ path('scrapbook_show', { 'id': scrapbook.id }) }}" class="btn btn-warning"> Cancel </a>
         {% endif %}
     </div>
 </div>
