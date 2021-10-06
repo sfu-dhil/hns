@@ -72,31 +72,18 @@ class Builder implements ContainerAwareInterface {
         $browse->setLinkAttribute('data-toggle', 'dropdown');
         $browse->setChildrenAttribute('class', 'dropdown-menu');
 
-//        $browse->addChild('Compilations', [
-//            'route' => 'compilation_index',
-//        ]);
-//        $browse->addChild('Document Sets', [
-//            'route' => 'document_set_index',
-//        ]);
-//        $browse->addChild('Documents', [
-//            'route' => 'document_index',
-//        ]);
+        $browse->addChild('Compilations', [
+            'route' => 'compilation_index',
+        ]);
+        $browse->addChild('Scrapbooks', [
+            'route' => 'scrapbook_index',
+        ]);
+        $browse->addChild('Items', [
+            'route' => 'item_index',
+        ]);
 
         if ($this->hasRole('ROLE_CONTENT_ADMIN')) {
             $divider = $browse->addChild('divider_content', [
-                'label' => '',
-            ]);
-            $divider->setAttributes([
-                'role' => 'separator',
-                'class' => 'divider',
-            ]);
-            $browse->addChild('Item', [
-                'uri' => '#',
-            ]);
-        }
-
-        if ($this->hasRole('ROLE_ADMIN')) {
-            $divider = $browse->addChild('divider_admin', [
                 'label' => '',
             ]);
             $divider->setAttributes([

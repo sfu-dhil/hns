@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Item List{% endblock %}
+
+{% block pageheader %}
+    <h1>Item List</h1>
+    <p class="count">
+        Displaying {{ items|length }} items of {{ items.getTotalItemCount }} total.
+    </p>
+ {% endblock %} 
+
+{% block body %}
+
+    <div class='btn-toolbar pull-right'>
+        <div class='btn-group'>
+            {% if is_granted('ROLE_CONTENT_ADMIN') %}
+            <a href="{{ path('item_new') }}" class="btn btn-default">
+                <span class="glyphicon glyphicon-plus"></span> New
+            </a>
+            {% endif %}
+
+            <a href="{{ path('item_search') }}" class="btn btn-default">
+                <span class="glyphicon glyphicon-search"></span> Search
+            </a>
+        </div>
+    </div>
+
+    {% embed 'item/partial/table.html.twig' %}
+    {% endembed %}
+
+    <div class="navigation">
+        {{ knp_pagination_render(items) }}
+    </div>
+
+{% endblock %}

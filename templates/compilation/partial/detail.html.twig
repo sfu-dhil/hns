@@ -1,0 +1,50 @@
+
+<table class='table table-bordered table-condensed table-hover table-striped'>
+    <tbody>
+        <tr>
+            <th>Name</th>
+            <td>
+                                                            {{ compilation.name }}
+                                  </td>
+          </tr>
+          <tr>
+            <th>Label</th>
+            <td>
+                                                            {{ compilation.label }}
+                                  </td>
+          </tr>
+          <tr>
+            <th>Description</th>
+            <td>
+                                                            {{ compilation.description|raw }}
+                                  </td>
+          </tr>
+          
+                                                                  <tr>
+                <th>Scrapbook</th>
+                <td>
+                  {% if compilation.scrapbooks|length > 0 %}
+                  <ul>
+                      {% for scrapbook in compilation.scrapbooks %} 
+                      <li>
+                          <a href='{{ path("scrapbook_show", {"id":scrapbook.id }) }}'>
+                              {{ scrapbook }}
+                          </a>
+                      </li>
+                      {% endfor %}
+                  </ul>
+                  {% endif %}
+                </td>
+              </tr>
+          <tr>
+        <th>Created</th>
+        <td>{{ compilation.created|date }}</td>
+    </tr>
+    <tr>
+        <th>Updated</th>
+        <td>{{ compilation.updated|date }}</td>
+    </tr>
+    </tbody>
+</table>
+
+

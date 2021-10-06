@@ -1,0 +1,58 @@
+
+<table class='table table-bordered table-condensed table-hover table-striped'>
+    <tbody>
+        <tr>
+            <th>Name</th>
+            <td>
+                                                            {{ scrapbook.name }}
+                                  </td>
+          </tr>
+          <tr>
+            <th>Label</th>
+            <td>
+                                                            {{ scrapbook.label }}
+                                  </td>
+          </tr>
+          <tr>
+            <th>Description</th>
+            <td>
+                                                            {{ scrapbook.description|raw }}
+                                  </td>
+          </tr>
+          
+                                                                  <tr>
+                <th>Compilation</th>
+                <td>
+                {% if scrapbook.compilation %}
+                  <a href='{{ path("compilation_show", {"id": scrapbook.compilation.id}) }}'>{{ scrapbook.compilation }}</a>
+                  {% endif %}
+                </td>
+              </tr>
+                                                                  <tr>
+                <th>Item</th>
+                <td>
+                  {% if scrapbook.items|length > 0 %}
+                  <ul>
+                      {% for item in scrapbook.items %} 
+                      <li>
+                          <a href='{{ path("item_show", {"id":item.id }) }}'>
+                              {{ item }}
+                          </a>
+                      </li>
+                      {% endfor %}
+                  </ul>
+                  {% endif %}
+                </td>
+              </tr>
+          <tr>
+        <th>Created</th>
+        <td>{{ scrapbook.created|date }}</td>
+    </tr>
+    <tr>
+        <th>Updated</th>
+        <td>{{ scrapbook.updated|date }}</td>
+    </tr>
+    </tbody>
+</table>
+
+
