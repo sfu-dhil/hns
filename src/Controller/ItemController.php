@@ -19,6 +19,8 @@ use Nines\UtilBundle\Controller\PaginatorTrait;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -179,4 +181,18 @@ class ItemController extends AbstractController implements PaginatorAwareInterfa
 
         return $this->redirectToRoute('item_index');
     }
+
+
+    /**
+     * @Route("/{id}/pdf", name="item_pdf", methods={"GET"})
+     *
+     * @return BinaryFileResponse
+     */
+    public function pdf(Item $item) {
+        if( ! $item->getPublic() && ! $this->getUser()) {
+            throw new AccessDeniedException();
+        }
+        return new BinaryFileResponse($item->getFile());
+    }
+
 }

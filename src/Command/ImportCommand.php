@@ -17,6 +17,8 @@ use App\Repository\CompilationRepository;
 use App\Repository\ScrapbookRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Nines\DublinCoreBundle\Entity\Element;
+use Nines\DublinCoreBundle\Entity\Value;
 use Nines\DublinCoreBundle\Repository\ElementRepository;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -52,6 +54,7 @@ class ImportCommand extends Command {
         $files = $this->getFileList($dir);
 
         foreach ($files as $file) {
+            $io->writeln($file);
             $this->import($dir, $file, $metadata);
             $this->em->flush();
         }
@@ -62,7 +65,7 @@ class ImportCommand extends Command {
     public function trim(array $row, int $columns) : array {
         $data = array_pad($row, $columns, '');
 
-        return array_map(fn ($d) => preg_replace('/^\s+|\s+$/u', '', $d), $data);
+        return array_map(fn($d) => preg_replace('/^\s+|\s+$/u', '', $d), $data);
     }
 
     public function getMetadata(string $file) : array {
@@ -115,6 +118,28 @@ class ImportCommand extends Command {
         return $scrapbook;
     }
 
+    public function getElement(string $name) : Element {
+        $element = $this->elementRepository->findOneBy(['name' => $name]);
+        if ( ! $element) {
+            throw new Exception("Element {$name} not found.");
+        }
+        return $element;
+    }
+
+    public function createValue(Item $item, $name, ...$datas) {
+        foreach ($datas as $data) {
+            if ( ! $data) {
+                continue;
+            }
+            $element = $this->getElement($name);
+            $value = new Value();
+            $value->setElement($element);
+            $value->setData($data);
+            $item->addValue($value);
+            $this->em->persist($value);
+        }
+    }
+
     public function createItem(Scrapbook $scrapbook, string $path, array $metadata) : void {
         $item = new Item();
         $item->setScrapbook($scrapbook);
@@ -123,8 +148,19 @@ class ImportCommand extends Command {
         $item->setPublic(false);
         $text = file_get_contents($path . '.txt');
         $item->setText($text);
-
         $this->em->persist($item);
+        $this->em->flush(); # Item objects must be flushed to the database before adding metadata values.
+
+        $this->createValue($item, 'dc_identifier', $metadata[2]);
+        $this->createValue($item, 'dc_date', $metadata[4]);
+        $this->createValue($item, 'dc_publisher', $metadata[6]);
+        $this->createValue($item, 'dc_creator', $metadata[7], $metadata[10], $metadata[13], $metadata[16]);
+        $this->createValue($item, 'dc_format', $metadata[19]);
+        $this->createValue($item, 'dc_language', $metadata[20]);
+        $this->createValue($item, 'dc_rights', $metadata[22], $metadata[23]);
+        $this->createValue($item, 'dc_source', $metadata[24]);
+        $this->createValue($item, 'dc_subject', $metadata[25], $metadata[28], $metadata[31], $metadata[34],
+            $metadata[37], $metadata[40], $metadata[43], $metadata[46], $metadata[49]);
     }
 
     /**

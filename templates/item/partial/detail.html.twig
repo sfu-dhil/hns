@@ -1,71 +1,109 @@
-<table class='table table-bordered table-condensed table-hover table-striped'>
-    <tbody>
-        <tr>
-            <th>Public</th>
-            <td>
-                {% if item.public %}Yes{% else %}No{% endif %}
-            </td>
-        </tr>
-        <tr>
-            <th>Original Name</th>
-            <td>
-                {{ item.originalName }}
-            </td>
-        </tr>
-        <tr>
-            <th>Path</th>
-            <td>
-                {{ item.path }}
-            </td>
-        </tr>
-        <tr>
-            <th>Mime Type</th>
-            <td>
-                {{ item.mimeType }}
-            </td>
-        </tr>
-        <tr>
-            <th>File Size</th>
-            <td>
-                {{ item.fileSize }}
-            </td>
-        </tr>
-        <tr>
-            <th>Thumb Path</th>
-            <td>
-                {{ item.thumbPath }}
-            </td>
-        </tr>
-        <tr>
-            <th>Description</th>
-            <td>
-                {{ item.description|raw }}
-            </td>
-        </tr>
-        <tr>
-            <th>License</th>
-            <td>
-                {{ item.license|raw }}
-            </td>
-        </tr>
+<div>
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#details" aria-controls="home" role="tab" data-toggle="tab">Details</a></li>
+        <li role="presentation"><a href="#metadata" aria-controls="profile" role="tab" data-toggle="tab">Metadata</a></li>
+        <li role="presentation"><a href="#content" aria-controls="messages" role="tab" data-toggle="tab">Content</a></li>
+        <li role="presentation"><a href="#text" aria-controls="messages" role="tab" data-toggle="tab">Text</a></li>
+    </ul>
 
-        <tr>
-            <th>Scrapbook</th>
-            <td>
-                {% if item.scrapbook %}
-                    <a href='{{ path("scrapbook_show", {"id": item.scrapbook.id}) }}'>{{ item.scrapbook }}</a>
-                {% endif %}
-            </td>
-        </tr>
-        <tr>
-            <th>Created</th>
-            <td>{{ item.created|date }}</td>
-        </tr>
-        <tr>
-            <th>Updated</th>
-            <td>{{ item.updated|date }}</td>
-        </tr>
-    </tbody>
-</table>
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active fade in" id="details">
+            <table class='table table-bordered table-condensed table-hover table-striped'>
+                <tbody>
+                    <tr>
+                        <th>Public</th>
+                        <td>
+                            {% if item.public %}Yes{% else %}No{% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Original Name</th>
+                        <td>
+                            {{ item.originalName }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Path</th>
+                        <td>
+                            {{ item.path }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Mime Type</th>
+                        <td>
+                            {{ item.mimeType }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>File Size</th>
+                        <td>
+                            {{ item.fileSize }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Thumb Path</th>
+                        <td>
+                            {{ item.thumbPath }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Description</th>
+                        <td>
+                            {{ item.description|raw }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>License</th>
+                        <td>
+                            {{ item.license|raw }}
+                        </td>
+                    </tr>
 
+                    <tr>
+                        <th>Scrapbook</th>
+                        <td>
+                            {% if item.scrapbook %}
+                                <a href='{{ path("scrapbook_show", {"id": item.scrapbook.id}) }}'>{{ item.scrapbook }}</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Created</th>
+                        <td>{{ item.created|date }}</td>
+                    </tr>
+                    <tr>
+                        <th>Updated</th>
+                        <td>{{ item.updated|date }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div role="tabpanel" class="tab-pane fade" id="metadata">
+            <table class='table table-bordered table-condensed table-hover table-striped'>
+                <tbody>
+                    {% for value in item.values %}
+                        <tr>
+                            <th>{{ value.element.label }}</th>
+                            <td>{{ value.data }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div role="tabpanel" class="tab-pane fade" id="content">
+            <div class='well' id='pdfview' style='height: 40em'></div>
+        </div>
+        <div role="tabpanel" class="tab-pane fade" id="text">
+            <div style='height: 40em; overflow: auto'>
+                <pre>{{ item.text }}</pre>
+            </div>
+        </div>
+    </div>
+</div>
 
+{% block javascripts %}
+    <script src='{{ asset('yarn/pdfobject/pdfobject.min.js') }}'></script>
+    <script>PDFObject.embed("{{ path('item_pdf', {'id': item.id}) }}", "#pdfview")</script>
+{% endblock %}

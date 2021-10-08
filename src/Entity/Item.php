@@ -15,6 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Nines\DublinCoreBundle\Entity\ValueInterface;
 use Nines\DublinCoreBundle\Entity\ValueTrait;
 use Nines\MediaBundle\Entity\AbstractPdf;
+use Nines\SolrBundle\Annotation as Solr;
 
 /**
  * @ORM\Entity(repositoryClass=ItemRepository::class)
