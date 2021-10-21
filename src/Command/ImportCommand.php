@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Entity\Compilation;
+use App\Entity\Folio;
 use App\Entity\Item;
 use App\Entity\Scrapbook;
 use App\Repository\CompilationRepository;
@@ -20,11 +21,12 @@ use Exception;
 use Nines\DublinCoreBundle\Entity\Element;
 use Nines\DublinCoreBundle\Entity\Value;
 use Nines\DublinCoreBundle\Repository\ElementRepository;
+use Nines\MediaBundle\Entity\Image;
+use Nines\MediaBundle\Service\PdfManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ImportCommand extends Command {
@@ -36,40 +38,127 @@ class ImportCommand extends Command {
 
     private ElementRepository $elementRepository;
 
+    private PdfManager $pdfManager;
+
     protected static $defaultName = 'app:import';
 
     protected static $defaultDescription = 'Add a short description for your command';
 
+    private function addItemPages(Item $item, $itemPagination, $ocrDir) : void {
+        foreach($itemPagination['pages'] as $p) {
+            $basename = basename($itemPagination['source'], '.pdf');
+            $imagePath = "{$ocrDir}/{$basename}-{$p}.png";
+            $hocrPath = "{$ocrDir}/{$basename}-{$p}.hocr";
+            $textPath = "{$ocrDir}/{$basename}-{$p}.txt";
+
+            $folio = new Folio();
+            $folio->setItem($item);
+            $folio->setPageNumber($p);
+            $folio->setText(file_get_contents($textPath));
+            $folio->setHocr(file_get_contents($hocrPath));
+            $this->em->persist($folio);
+            $this->em->flush();
+
+            $upload = new UploadedFile($imagePath, basename($imagePath), 'image/png', null, true);
+            $image = new Image();
+            $image->setFile($upload);
+            $image->setPublic(false);
+            $image->setEntity($folio);
+
+            $this->em->persist($image);
+            $this->em->flush();
+
+        }
+    }
+
     protected function configure() : void {
-        $this->setDescription(self::$defaultDescription)->addArgument('csv', InputArgument::REQUIRED, 'File containing metadata')->addArgument('dir', InputArgument::REQUIRED, 'Directory with PDFs to import');
+        $this->setDescription(self::$defaultDescription);
+        $this->addArgument('pages', InputArgument::REQUIRED, 'CSV file with pagination data');
+        $this->addArgument('meta', InputArgument::REQUIRED, 'CSV file with metadata');
+        $this->addArgument('itemPath', InputArgument::REQUIRED, 'Directory with the segmented PDFs');
+        $this->addArgument('ocrDir', InputArgument::REQUIRED, 'Directory with the page images, text, and OCR files');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) : int {
-        $io = new SymfonyStyle($input, $output);
+        $pagination = $this->getPaginationData($input->getArgument('pages'));
+        $meta = $this->getMetadata($input->getArgument('meta'));
 
-        $csv = $input->getArgument('csv');
-        $metadata = $this->getMetadata($csv);
+        $itemPath = $input->getArgument('itemPath');
+        $items = $this->getItems($itemPath);
 
-        $dir = $input->getArgument('dir');
-        $files = $this->getFileList($dir);
+        $ocrDir = $input->getArgument('ocrDir');
 
-        foreach ($files as $file) {
-            $io->writeln($file);
-            $this->import($dir, $file, $metadata);
-            $this->em->flush();
+        foreach ($items as $item) {
+            $output->writeln($item);
+            $identifier = preg_replace('/_p.*.pdf$/', '', $item);
+            $itemMetadata = $meta[$identifier];
+            $itemPagination = $pagination[$item];
+            $compilation = $this->findCompilation(explode(',', $itemMetadata[0])[0]);
+            $scrapbook = $this->findScrapbook($itemMetadata[1], $compilation, $itemMetadata);
+            $item = $this->createItem($itemMetadata, $itemPagination, $scrapbook, $itemPath . '/' . $item);
+            $this->addItemPages($item, $itemPagination, $ocrDir);
         }
 
         return 0;
     }
 
+    public function getItems(string $path) : array {
+        $handle = opendir($path);
+        $files = [];
+        while (false !== ($entry = readdir($handle))) {
+            if ( ! preg_match('/\.pdf$/', $entry)) {
+                continue;
+            }
+            $files[] = $entry;
+        }
+        closedir($handle);
+
+        return $files;
+    }
+
     public function trim(array $row, int $columns) : array {
         $data = array_pad($row, $columns, '');
 
-        return array_map(fn($d) => preg_replace('/^\s+|\s+$/u', '', $d), $data);
+        return array_map(fn ($d) => preg_replace('/^\s+|\s+$/u', '', $d), $data);
     }
 
-    public function getMetadata(string $file) : array {
-        $handle = fopen($file, 'r');
+    public function getPaginationData(string $path) : array {
+        $handle = fopen($path, 'r');
+        for ($i = 0; $i < 2; $i++) {
+            fgetcsv($handle); // skip two lines of headers.
+        }
+
+        $items = [];
+        while ($record = fgetcsv($handle)) {
+            $range = preg_replace('/;\s*/', ',', $record[1]);
+            $marker = preg_replace('/;\s*/', 'p', $record[1]);
+            $part = basename($record[0], '.pdf') . '_p' . $marker . '.pdf';
+
+            $items[$part] = [
+                'source' => $record[0],
+                'pages' => [],
+                'title' => $record[2],
+                'date' => $record[3],
+                'type' => $record[4],
+            ];
+            foreach (explode(',', $range) as $r) {
+                if (preg_match('/-/', $r)) {
+                    [$a, $b] = explode('-', $r);
+                    for ($i = (int) $a; $i <= $b; $i++) {
+                        $items[$part]['pages'][] = $i;
+                    }
+                } else {
+                    $items[$part]['pages'][] = (int) $r;
+                }
+            }
+        }
+        fclose($handle);
+
+        return $items;
+    }
+
+    public function getMetadata(string $path) : array {
+        $handle = fopen($path, 'r');
         for ($i = 0; $i < 2; $i++) {
             fgetcsv($handle); // skip two lines of headers.
         }
@@ -77,21 +166,9 @@ class ImportCommand extends Command {
         while ($record = fgetcsv($handle)) {
             $metadata[$record[2]] = $this->trim($record, 52);
         }
+        fclose($handle);
 
         return $metadata;
-    }
-
-    public function getFileList(string $dir) : array {
-        $handle = opendir($dir);
-        $files = [];
-        while (false !== ($entry = readdir($handle))) {
-            if ( ! preg_match('/_ocr\.pdf$/', $entry)) {
-                continue;
-            }
-            $files[] = $entry;
-        }
-
-        return $files;
     }
 
     public function findCompilation(string $name) : Compilation {
@@ -123,10 +200,11 @@ class ImportCommand extends Command {
         if ( ! $element) {
             throw new Exception("Element {$name} not found.");
         }
+
         return $element;
     }
 
-    public function createValue(Item $item, $name, ...$datas) {
+    public function createValue(Item $item, $name, ...$datas) : void {
         foreach ($datas as $data) {
             if ( ! $data) {
                 continue;
@@ -140,45 +218,43 @@ class ImportCommand extends Command {
         }
     }
 
-    public function createItem(Scrapbook $scrapbook, string $path, array $metadata) : void {
+    public function createItem($itemMetadata, $itemPagination, Scrapbook $scrapbook, string $path) : Item {
         $item = new Item();
         $item->setScrapbook($scrapbook);
         $upload = new UploadedFile($path, basename($path), 'application/pdf', null, true);
         $item->setFile($upload);
         $item->setPublic(false);
-        $text = file_get_contents($path . '.txt');
-        $item->setText($text);
+        $this->pdfManager->uploadFile($item);
         $this->em->persist($item);
-        $this->em->flush(); # Item objects must be flushed to the database before adding metadata values.
+        $this->em->flush(); // Item objects must be flushed to the database before adding metadata values.
 
-        $this->createValue($item, 'dc_identifier', $metadata[2]);
-        $this->createValue($item, 'dc_date', $metadata[4]);
-        $this->createValue($item, 'dc_publisher', $metadata[6]);
-        $this->createValue($item, 'dc_creator', $metadata[7], $metadata[10], $metadata[13], $metadata[16]);
-        $this->createValue($item, 'dc_format', $metadata[19]);
-        $this->createValue($item, 'dc_language', $metadata[20]);
-        $this->createValue($item, 'dc_rights', $metadata[22], $metadata[23]);
-        $this->createValue($item, 'dc_source', $metadata[24]);
-        $this->createValue($item, 'dc_subject', $metadata[25], $metadata[28], $metadata[31], $metadata[34],
-            $metadata[37], $metadata[40], $metadata[43], $metadata[46], $metadata[49]);
-    }
+        $this->createValue($item, 'dc_title', $itemPagination['title']);
 
-    /**
-     * @throws Exception
-     */
-    public function import(string $dir, string $filename, array $metadata) : void {
-        $m = [];
-        preg_match('/^(.*?)_p/', $filename, $m);
-        $identifier = $m[1];
-        if ( ! array_key_exists($identifier, $metadata)) {
-            throw new Exception("Unknown identifier: {$identifier}");
-        }
-        $meta = $metadata[$identifier];
-        $compilationName = explode(',', $meta[0])[0];
-        $compilation = $this->findCompilation($compilationName);
+        $this->createValue($item, 'dc_identifier', $itemMetadata[2]);
+        $this->createValue($item, 'dc_date', $itemMetadata[4], $itemPagination['date']);
+        $this->createValue($item, 'dc_publisher', $itemMetadata[6]);
+        $this->createValue($item, 'dc_creator', $itemMetadata[7], $itemMetadata[10], $itemMetadata[13], $itemMetadata[16]);
+        $this->createValue($item, 'dc_format', $itemMetadata[19]);
+        $this->createValue($item, 'dc_language', $itemMetadata[20]);
+        $this->createValue($item, 'dc_rights', $itemMetadata[22], $itemMetadata[23]);
+        $this->createValue($item, 'dc_source', $itemMetadata[24]);
+        $this->createValue($item, 'dc_type', $itemPagination['type']);
 
-        $scrapbook = $this->findScrapbook($meta[1], $compilation, $meta);
-        $this->createItem($scrapbook, $dir . '/' . $filename, $meta);
+        $this->createValue(
+            $item,
+            'dc_subject',
+            $itemMetadata[25],
+            $itemMetadata[28],
+            $itemMetadata[31],
+            $itemMetadata[34],
+            $itemMetadata[37],
+            $itemMetadata[40],
+            $itemMetadata[43],
+            $itemMetadata[46],
+            $itemMetadata[49]
+        );
+
+        return $item;
     }
 
     /**
@@ -186,6 +262,13 @@ class ImportCommand extends Command {
      */
     public function setCompilationRepository(CompilationRepository $compilationRepository) : void {
         $this->compilationRepository = $compilationRepository;
+    }
+
+    /**
+     * @required
+     */
+    public function setScrapbookRepository(ScrapbookRepository $scrapbookRepository) : void {
+        $this->scrapbookRepository = $scrapbookRepository;
     }
 
     /**
@@ -205,7 +288,7 @@ class ImportCommand extends Command {
     /**
      * @required
      */
-    public function setScrapbookRepository(ScrapbookRepository $scrapbookRepository) : void {
-        $this->scrapbookRepository = $scrapbookRepository;
+    public function setPdfManager(PdfManager $pdfManager) : void {
+        $this->pdfManager = $pdfManager;
     }
 }

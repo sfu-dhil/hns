@@ -1,6 +1,7 @@
 nines_util:
     trim_length: 50
     routing:
-        - { class: App\Entity\Document, route: document_show }
-        - { class: App\Entity\DocumentSet, route: document_set_show }
+        - { class: App\Entity\Folio, route: folio_show }
+        - { class: App\Entity\Item, route: item_show }
+        - { class: App\Entity\Scrapbook, route: scrapbook_show }
         - { class: App\Entity\Compilation, route: compilation_show }

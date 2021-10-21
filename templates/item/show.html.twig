@@ -27,4 +27,14 @@
     {% embed 'item/partial/detail.html.twig' %}
     {% endembed %}
 
+    <ul>
+    {% for folio in item.folios|sort((a,b) => a.pageNumber <=> b.pageNumber) %}
+    <li><a href='{{ path('folio_show', {'id': folio.id }) }}'>
+            {{ folio }}
+        </a><br />
+        <i>{{ folio.status }}</i>
+    </li>
+    {% endfor %}
+    </ul>
+
 {% endblock %}

@@ -11,17 +11,15 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\ItemRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Nines\DublinCoreBundle\Entity\ValueInterface;
 use Nines\DublinCoreBundle\Entity\ValueTrait;
 use Nines\MediaBundle\Entity\AbstractPdf;
-use Nines\SolrBundle\Annotation as Solr;
 
 /**
  * @ORM\Entity(repositoryClass=ItemRepository::class)
- * @ORM\Table(indexes={
- *     @ORM\Index(name="item_text_ft", columns={"text"}, flags={"fulltext"})
- * })
  */
 class Item extends Abstractpdf implements ValueInterface {
     use ValueTrait {
@@ -30,19 +28,20 @@ class Item extends Abstractpdf implements ValueInterface {
     }
 
     /**
-     * @var ?string
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $text;
-
-    /**
      * @ORM\ManyToOne(targetEntity="Scrapbook", inversedBy="items")
      */
     private ?Scrapbook $scrapbook;
 
+    /**
+     * @var Collection|Folio[]
+     * @ORM\OneToMany(targetEntity="App\Entity\Folio", mappedBy="item")
+     */
+    private Collection $folios;
+
     public function __construct() {
         parent::__construct();
         $this->value_constructor();
+        $this->folios = new ArrayCollection();
     }
 
     public function __toString() : string {
@@ -63,12 +62,29 @@ class Item extends Abstractpdf implements ValueInterface {
         return $this;
     }
 
-    public function getText() : ?string {
-        return $this->text;
+    /**
+     * @return Collection|Folio[]
+     */
+    public function getFolios() : Collection {
+        return $this->folios;
     }
 
-    public function setText(?string $text) : self {
-        $this->text = $text;
+    public function addFolio(Folio $folio) : self {
+        if ( ! $this->folios->contains($folio)) {
+            $this->folios[] = $folio;
+            $folio->setItem($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFolio(Folio $folio) : self {
+        if ($this->folios->removeElement($folio)) {
+            // set the owning side to null (unless already changed)
+            if ($folio->getItem() === $this) {
+                $folio->setItem(null);
+            }
+        }
 
         return $this;
     }

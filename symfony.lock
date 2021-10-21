@@ -107,16 +107,16 @@
         "version": "v1.0.5"
     },
     "guzzlehttp/guzzle": {
-        "version": "7.3.0"
+        "version": "7.4.0"
     },
     "guzzlehttp/promises": {
-        "version": "1.4.1"
+        "version": "1.5.0"
     },
     "guzzlehttp/psr7": {
-        "version": "2.0.0"
+        "version": "2.1.0"
     },
     "knplabs/knp-components": {
-        "version": "v3.1.0"
+        "version": "v3.2.0"
     },
     "knplabs/knp-menu": {
         "version": "2.6.1"
@@ -125,13 +125,10 @@
         "version": "v2.3.0"
     },
     "knplabs/knp-paginator-bundle": {
-        "version": "v5.6.0"
+        "version": "v5.7.0"
     },
     "laminas/laminas-code": {
         "version": "4.4.2"
-    },
-    "league/csv": {
-        "version": "9.7.1"
     },
     "liip/test-fixtures-bundle": {
         "version": "1.11.2"
@@ -152,7 +149,7 @@
         "version": "2.1.33"
     },
     "nyholm/psr7": {
-        "version": "1.0",
+        "version": "1.4",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
@@ -304,7 +301,7 @@
         "version": "1.8.3"
     },
     "solarium/solarium": {
-        "version": "6.1.4"
+        "version": "6.1.5"
     },
     "soundasleep/html2text": {
         "version": "1.1.0"

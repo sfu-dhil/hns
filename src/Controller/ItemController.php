@@ -182,17 +182,16 @@ class ItemController extends AbstractController implements PaginatorAwareInterfa
         return $this->redirectToRoute('item_index');
     }
 
-
     /**
      * @Route("/{id}/pdf", name="item_pdf", methods={"GET"})
      *
      * @return BinaryFileResponse
      */
     public function pdf(Item $item) {
-        if( ! $item->getPublic() && ! $this->getUser()) {
+        if ( ! $item->getPublic() && ! $this->getUser()) {
             throw new AccessDeniedException();
         }
+
         return new BinaryFileResponse($item->getFile());
     }
-
 }

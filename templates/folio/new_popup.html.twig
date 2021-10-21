@@ -1,0 +1,15 @@
+{% extends 'popup.html.twig' %}
+
+    {% block title %}New Folio {% endblock %}
+
+    {% block body %}
+        <h1>New Folio</h1>
+
+        {% embed 'folio/partial/form.html.twig' %}
+        {% endembed %}
+
+    {% endblock %}
+
+    {% block javascripts %}
+        {% include '@NinesEditor/editor/widget.html.twig' %}
+    {% endblock %}

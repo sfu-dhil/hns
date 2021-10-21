@@ -81,6 +81,9 @@ class Builder implements ContainerAwareInterface {
         $browse->addChild('Items', [
             'route' => 'item_index',
         ]);
+        $browse->addChild('Folios', [
+            'route' => 'folio_index',
+        ]);
 
         if ($this->hasRole('ROLE_CONTENT_ADMIN')) {
             $divider = $browse->addChild('divider_content', [

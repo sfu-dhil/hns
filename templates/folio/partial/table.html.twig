@@ -1,0 +1,26 @@
+<table class="table table-bordered table-condensed table-hover table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Page</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for folio in folios %}
+            <tr>
+                <td>
+                    <a href="{{ path('folio_show', { 'id': folio.id }) }}">
+                        {{ folio.id }}
+                    </a>
+                </td>
+                <td>
+                    {{ folio }}
+                </td>
+                <td>
+                    {{ folio.status }}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

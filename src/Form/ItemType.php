@@ -48,6 +48,7 @@ class ItemType extends PdfType {
             ],
         ]);
         ValueType::add($builder, $options, $this->elementRepository);
+        $builder->setDataMapper($this->dcm);
     }
 
     /**

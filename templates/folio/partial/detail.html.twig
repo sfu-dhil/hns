@@ -1,0 +1,64 @@
+<div>
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#details" aria-controls="home" role="tab" data-toggle="tab">Details</a></li>
+        <li role="presentation"><a href="#image" aria-controls="profile" role="tab" data-toggle="tab">Image</a></li>
+        <li role="presentation"><a href="#text" aria-controls="profile" role="tab" data-toggle="tab">Text</a></li>
+        <li role="presentation"><a href="#hocr" aria-controls="messages" role="tab" data-toggle="tab">OCR</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active fade in" id="details">
+            <table class='table table-bordered table-condensed table-hover table-striped'>
+                <tbody>
+                    <tr>
+                        <th>Page Number</th>
+                        <td>
+                            {{ folio.pageNumber }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Status</th>
+                        <td>
+                            {{ folio.status }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Item</th>
+                        <td>
+                            {% if folio.item %}
+                                <a href='{{ path("item_show", {"id": folio.item.id}) }}'>{{ folio.item }}</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Created</th>
+                        <td>{{ folio.created|date }}</td>
+                    </tr>
+                    <tr>
+                        <th>Updated</th>
+                        <td>{{ folio.updated|date }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div role="tabpanel" class="tab-pane fade" id="image">
+            <h2>Folio Image</h2>
+            {% set image=folio.images|first %}
+            <img src="{{ path('nines_media_image_view', {'id': image.id}) }}" style='max-width: 100%; height: auto'/>
+        </div>
+
+        <div role="tabpanel" class="tab-pane fade" id="text">
+            <h2>Text</h2>
+            <p>The text below is automatically extracted from the OCR data. It is used for searching only.</p>
+            <div style='outline: 1px solid black; width: 100%; max-height: 900px; padding: 1em; overflow: scroll' >
+                {{ folio.text|nl2br }}
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane fade" id="hocr">
+            <iframe src='{{ path('folio_hocr', {'id': folio.id}) }}' width='100%' height='900px'></iframe>
+        </div>
+    </div>
+</div>
+
+
