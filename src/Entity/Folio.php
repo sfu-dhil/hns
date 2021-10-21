@@ -12,9 +12,12 @@ namespace App\Entity;
 
 use App\Repository\FolioRepository;
 use Doctrine\ORM\Mapping as ORM;
+use RuntimeException;
 use Nines\MediaBundle\Entity\ImageContainerInterface;
 use Nines\MediaBundle\Entity\ImageContainerTrait;
 use Nines\UtilBundle\Entity\AbstractEntity;
+use Soundasleep\Html2Text;
+use Soundasleep\Html2TextException;
 
 /**
  * @ORM\Entity(repositoryClass=FolioRepository::class)
@@ -91,18 +94,19 @@ class Folio extends AbstractEntity implements ImageContainerInterface {
     }
 
     public function setText(?string $text) : self {
-        $this->text = $text;
-
-        return $this;
+        throw new RuntimeException("The text propert of folios is read-only. Edit the OCR instead.");
     }
 
     public function getHocr() : ?string {
         return $this->hocr;
     }
 
+    /**
+     * @throws Html2TextException
+     */
     public function setHocr(?string $hocr) : self {
         $this->hocr = $hocr;
-
+        $this->text = Html2Text::convert($this->hocr, ['ignore_errors' => true, 'drop_links' => true]);
         return $this;
     }
 
