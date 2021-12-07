@@ -24,7 +24,6 @@ use Nines\MediaBundle\Entity\AbstractPdf;
 class Item extends Abstractpdf implements ValueInterface {
     use ValueTrait {
         ValueTrait::__construct as value_constructor;
-
     }
 
     /**

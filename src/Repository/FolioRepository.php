@@ -41,24 +41,9 @@ class FolioRepository extends ServiceEntityRepository {
     /**
      * @param string $q
      *
-     * @return Collection|Folio[]
-     */
-    public function typeaheadQuery($q) {
-        throw new RuntimeException('Not implemented yet.');
-        $qb = $this->createQueryBuilder('folio');
-        $qb->andWhere('folio.column LIKE :q');
-        $qb->orderBy('folio.column', 'ASC');
-        $qb->setParameter('q', "{$q}%");
-
-        return $qb->getQuery()->execute();
-    }
-
-    /**
-     * @param string $q
-     *
      * @return Collection|Folio[]|Query
      */
-    public function searchTextQuery($q) {
+    public function searchQuery($q) {
         $qb = $this->createQueryBuilder('folio');
         $qb->addSelect('MATCH (folio.text) AGAINST(:q BOOLEAN) as HIDDEN score');
         $qb->andHaving('score > 0');

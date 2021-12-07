@@ -73,27 +73,6 @@ class FolioController extends AbstractController implements PaginatorAwareInterf
     }
 
     /**
-     * @Route("/typeahead", name="folio_typeahead", methods={"GET"})
-     *
-     * @return JsonResponse
-     */
-    public function typeahead(Request $request, FolioRepository $folioRepository) {
-        $q = $request->query->get('q');
-        if ( ! $q) {
-            return new JsonResponse([]);
-        }
-        $data = [];
-        foreach ($folioRepository->typeaheadQuery($q) as $result) {
-            $data[] = [
-                'id' => $result->getId(),
-                'text' => (string) $result,
-            ];
-        }
-
-        return new JsonResponse($data);
-    }
-
-    /**
      * @Route("/new", name="folio_new", methods={"GET", "POST"})
      * @Template
      * @IsGranted("ROLE_FOLIO_ADMIN")

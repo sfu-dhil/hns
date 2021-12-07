@@ -44,10 +44,9 @@ class CompilationRepository extends ServiceEntityRepository {
      * @return Collection|Compilation[]
      */
     public function typeaheadQuery($q) {
-        throw new RuntimeException('Not implemented yet.');
         $qb = $this->createQueryBuilder('compilation');
-        $qb->andWhere('compilation.column LIKE :q');
-        $qb->orderBy('compilation.column', 'ASC');
+        $qb->andWhere('compilation.label LIKE :q');
+        $qb->orderBy('compilation.label', 'ASC');
         $qb->setParameter('q', "{$q}%");
 
         return $qb->getQuery()->execute();
@@ -58,37 +57,7 @@ class CompilationRepository extends ServiceEntityRepository {
      *
      * @return Collection|Compilation[]|Query
      */
-    public function searchLabelQuery($q) {
-        $qb = $this->createQueryBuilder('compilation');
-        $qb->addSelect('MATCH (compilation.label) AGAINST(:q BOOLEAN) as HIDDEN score');
-        $qb->andHaving('score > 0');
-        $qb->orderBy('score', 'DESC');
-        $qb->setParameter('q', $q);
-
-        return $qb->getQuery();
-    }
-
-    /**
-     * @param string $q
-     *
-     * @return Collection|Compilation[]|Query
-     */
-    public function searchDescriptionQuery($q) {
-        $qb = $this->createQueryBuilder('compilation');
-        $qb->addSelect('MATCH (compilation.description) AGAINST(:q BOOLEAN) as HIDDEN score');
-        $qb->andHaving('score > 0');
-        $qb->orderBy('score', 'DESC');
-        $qb->setParameter('q', $q);
-
-        return $qb->getQuery();
-    }
-
-    /**
-     * @param string $q
-     *
-     * @return Collection|Compilation[]|Query
-     */
-    public function searchLabelDescriptionQuery($q) {
+    public function searchQuery($q) {
         $qb = $this->createQueryBuilder('compilation');
         $qb->addSelect('MATCH (compilation.label, compilation.description) AGAINST(:q BOOLEAN) as HIDDEN score');
         $qb->andHaving('score > 0');

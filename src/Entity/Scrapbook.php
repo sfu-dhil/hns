@@ -23,7 +23,7 @@ class Scrapbook extends AbstractTerm {
     /**
      * @ORM\ManyToOne(targetEntity="Compilation", inversedBy="scrapbooks")
      */
-    private Compilation $compilation;
+    private ?Compilation $compilation;
 
     /**
      * @var Collection|Item[]

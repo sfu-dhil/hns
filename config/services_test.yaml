@@ -1,0 +1,12 @@
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        public: true
+
+    test.App\Repository\CompilationRepository: '@App\Repository\CompilationRepository'
+    test.App\Repository\FolioRepository: '@App\Repository\FolioRepository'
+    test.App\Repository\ItemRepository: '@App\Repository\ItemRepository'
+    test.App\Repository\ScrapbookRepository: '@App\Repository\ScrapbookRepository'

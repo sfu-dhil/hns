@@ -45,7 +45,9 @@
         <div role="tabpanel" class="tab-pane fade" id="image">
             <h2>Folio Image</h2>
             {% set image=folio.images|first %}
+            {% if image %}
             <img src="{{ path('nines_media_image_view', {'id': image.id}) }}" style='max-width: 100%; height: auto'/>
+            {% endif %}
         </div>
 
         <div role="tabpanel" class="tab-pane fade" id="text">
