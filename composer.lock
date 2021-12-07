@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "73da93c50963bea04d881b776c6b39a7",
+    "content-hash": "afce064e9eacf137334d0f02e4e59b48",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -8945,16 +8945,16 @@
         },
         {
             "name": "ubermichael/nines",
-            "version": "dev-4.x-img",
+            "version": "dev-4.x-img-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ubermichael/nines-bundles.git",
-                "reference": "55ffad5b18e564cbc231ab6b2ae115e24b10cac7"
+                "reference": "4df6927a21b432a9e4dd83bb3b7676ae81fa02d1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ubermichael/nines-bundles/zipball/55ffad5b18e564cbc231ab6b2ae115e24b10cac7",
-                "reference": "55ffad5b18e564cbc231ab6b2ae115e24b10cac7",
+                "url": "https://api.github.com/repos/ubermichael/nines-bundles/zipball/4df6927a21b432a9e4dd83bb3b7676ae81fa02d1",
+                "reference": "4df6927a21b432a9e4dd83bb3b7676ae81fa02d1",
                 "shasum": ""
             },
             "require": {
@@ -9003,10 +9003,10 @@
             ],
             "description": "Some useful bundles.",
             "support": {
-                "source": "https://github.com/ubermichael/nines-bundles/tree/4.x-img",
+                "source": "https://github.com/ubermichael/nines-bundles/tree/4.x-img-dev",
                 "issues": "https://github.com/ubermichael/nines-bundles/issues"
             },
-            "time": "2021-11-09T17:11:15+00:00"
+            "time": "2021-12-07T20:25:22+00:00"
         },
         {
             "name": "webmozart/assert",
