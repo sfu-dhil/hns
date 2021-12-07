@@ -23,6 +23,8 @@
 
 # Yarn packages.
 /public/yarn
+
+# deployment settings
 /config/deploy.yaml
 
 # Misc data

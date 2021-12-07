@@ -96,7 +96,7 @@ class FolioController extends AbstractController implements PaginatorAwareInterf
     /**
      * @Route("/new", name="folio_new", methods={"GET", "POST"})
      * @Template
-     * @IsGranted("ROLE_CONTENT_ADMIN")
+     * @IsGranted("ROLE_FOLIO_ADMIN")
      *
      * @return array|RedirectResponse
      */
@@ -123,7 +123,7 @@ class FolioController extends AbstractController implements PaginatorAwareInterf
     /**
      * @Route("/new_popup", name="folio_new_popup", methods={"GET", "POST"})
      * @Template
-     * @IsGranted("ROLE_CONTENT_ADMIN")
+     * @IsGranted("ROLE_FOLIO_ADMIN")
      *
      * @return array|RedirectResponse
      */
@@ -154,7 +154,7 @@ class FolioController extends AbstractController implements PaginatorAwareInterf
     }
 
     /**
-     * @IsGranted("ROLE_CONTENT_ADMIN")
+     * @IsGranted("ROLE_FOLIO_ADMIN")
      * @Route("/{id}/edit", name="folio_edit", methods={"GET", "POST"})
      *
      * @Template
@@ -179,7 +179,7 @@ class FolioController extends AbstractController implements PaginatorAwareInterf
     }
 
     /**
-     * @IsGranted("ROLE_CONTENT_ADMIN")
+     * @IsGranted("ROLE_FOLIO_ADMIN")
      * @Route("/{id}", name="folio_delete", methods={"DELETE"})
      *
      * @return RedirectResponse
@@ -198,7 +198,7 @@ class FolioController extends AbstractController implements PaginatorAwareInterf
 
     /**
      * @Route("/{id}/new_image", name="folio_new_image", methods={"GET", "POST"})
-     * @IsGranted("ROLE_CONTENT_ADMIN")
+     * @IsGranted("ROLE_FOLIO_ADMIN")
      *
      * @Template("folio/new_image.html.twig")
      */
@@ -208,7 +208,7 @@ class FolioController extends AbstractController implements PaginatorAwareInterf
 
     /**
      * @Route("/{id}/edit_image/{image_id}", name="folio_edit_image", methods={"GET", "POST"})
-     * @IsGranted("ROLE_CONTENT_ADMIN")
+     * @IsGranted("ROLE_FOLIO_ADMIN")
      * @ParamConverter("image", options={"id": "image_id"})
      *
      * @Template("folio/edit_image.html.twig")
@@ -220,7 +220,7 @@ class FolioController extends AbstractController implements PaginatorAwareInterf
     /**
      * @Route("/{id}/delete_image/{image_id}", name="folio_delete_image", methods={"DELETE"})
      * @ParamConverter("image", options={"id": "image_id"})
-     * @IsGranted("ROLE_CONTENT_ADMIN")
+     * @IsGranted("ROLE_FOLIO_ADMIN")
      */
     public function deleteImage(Request $request, Folio $folio, Image $image) {
         return $this->deleteImageAction($request, $folio, $image, 'folio_show');
