@@ -47,9 +47,8 @@ class ItemRepository extends ServiceEntityRepository {
     public function typeaheadQuery($q) {
         $cls = Item::class;
         $qb = $this->createQueryBuilder('item');
-        $qb->innerJoin(Value::class, 'value', Query\Expr\Join::WITH, "value.entity = concat('{$cls}:', item.id)");
-        $qb->addSelect('MATCH(value.data) AGAINST(:q BOOLEAN) as HIDDEN dc_score');
-        $qb->orderBy('dc_score', 'ASC');
+        $qb->where("item.originalName like :q");
+        $qb->orderBy("item.originalName");
         $qb->setParameter('q', "{$q}%");
 
         return $qb->getQuery()->execute();

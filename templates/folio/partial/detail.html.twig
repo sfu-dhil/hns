@@ -45,20 +45,21 @@
         <div role="tabpanel" class="tab-pane fade" id="image">
             <h2>Folio Image</h2>
             {% set image=folio.images|first %}
+            {% if image %}
             <img src="{{ path('nines_media_image_view', {'id': image.id}) }}" style='max-width: 100%; height: auto'/>
+            {% endif %}
         </div>
 
         <div role="tabpanel" class="tab-pane fade" id="text">
             <h2>Text</h2>
-            <p>The text below is automatically extracted from the OCR data. It is used for searching only.</p>
+            <p>The text below is automatically extracted from the OCR data. It is used for debugging and searching only.</p>
             <div style='outline: 1px solid black; width: 100%; max-height: 900px; padding: 1em; overflow: scroll' >
                 {{ folio.text|nl2br }}
             </div>
         </div>
         <div role="tabpanel" class="tab-pane fade" id="hocr">
+            <p>The text below is the automatically extracted OCR data.</p>
             <iframe src='{{ path('folio_hocr', {'id': folio.id}) }}' width='100%' height='900px'></iframe>
         </div>
     </div>
 </div>
-
-

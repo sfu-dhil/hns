@@ -1,15 +1,87 @@
 {% extends 'base.html.twig' %}
 
-    {% block title %}Edit Folio {% endblock %}
+{% block title %}Edit Folio {% endblock %}
 
-    {% block body %}
-        <h1>Edit Folio</h1>
+{% block body %}
+    <h1>Edit Folio</h1>
 
-        {% embed 'folio/partial/form.html.twig' %}
-        {% endembed %}
+    <div class="viewport">
+        <div class="toolbar">
+            <div class="logo">hOCR-Proofreader</div>
 
-    {% endblock %}
+            <button id="toggle-layout-image">Image/Text</button>
+            <div class="separator"></div>
 
-    {% block javascripts %}
-        {% include '@NinesEditor/editor/widget.html.twig' %}
-    {% endblock %}
+            <span>Zoom:</span>
+            <button id="zoom-page-full">Full Page</button>
+            <button id="zoom-page-width">Page Width</button>
+            <button id="zoom-original">Original</button>
+            <div class="separator"></div>
+
+            <button id="button-save">Save</button>
+        </div>
+
+        <div id="layout-container" class="container"></div>
+        <div id="editor-container" class="container"></div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script src='{{ asset('yarn/hocr-proofreader/hocr-proofreader.js') }}'></script>
+
+    <script>
+        'use strict';
+
+        Util.onReady(function () {
+            var hocrProofreader = new HocrProofreader({
+                layoutContainer: 'layout-container',
+                editorContainer: 'editor-container'
+            });
+
+            document.getElementById('toggle-layout-image').addEventListener('click', function () {
+                hocrProofreader.toggleLayoutImage();
+            });
+
+            document.getElementById('zoom-page-full').addEventListener('click', function () {
+                hocrProofreader.setZoom('page-full');
+            });
+
+            document.getElementById('zoom-page-width').addEventListener('click', function () {
+                hocrProofreader.setZoom('page-width');
+            });
+
+            document.getElementById('zoom-original').addEventListener('click', function () {
+                hocrProofreader.setZoom('original');
+            });
+
+            document.getElementById('button-save').addEventListener('click', function () {
+                var hocr = hocrProofreader.getHocr();
+
+                var request = new XMLHttpRequest();
+                request.open('POST', 'save.php');
+                request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=utf-8');
+                request.send('hocr=' + encodeURIComponent(hocr));
+            });
+
+            var hocrBaseUrl = 'demo/';
+            var hocrUrl = '{{ path('folio_hocr', {'id': folio.id}) }}';
+
+            Util.get(hocrUrl, function (err, hocr) {
+                if (err) {
+                    return Util.handleError(err);
+                }
+
+                hocrProofreader.setHocr(hocr, hocrBaseUrl);
+            });
+        });
+
+    </script>
+{% endblock %}
+
+{% block styles %}
+    <link href='{{ asset('yarn/hocr-proofreader/fonts.css') }}'>
+    <link href='{{ asset('yarn/hocr-proofreader/editor.css') }}'>
+    <link href='{{ asset('yarn/hocr-proofreader/main.css') }}'>
+    <link href='{{ asset('yarn/hocr-proofreader/hocr-proofreader.css') }}'>
+{% endblock %}

@@ -1,4 +1,4 @@
 [submodule "deployment"]
 	path = deployment
-	url = git@github.com:ubermichael/deployment.git
+url=https://github.com/ubermichael/deployment.git
 	branch = main

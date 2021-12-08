@@ -2,6 +2,7 @@
     <thead>
         <tr>
             <th>Original Name</th>
+            <th>Title</th>
             <th>File Size</th>
         </tr>
     </thead>
@@ -11,6 +12,11 @@
                 <td>
                     <a href="{{ path('item_show', { 'id': item.id }) }}">
                         {{ item.originalName }}
+                    </a>
+                </td>
+                <td>
+                    <a href="{{ path('item_show', { 'id': item.id }) }}">
+                        {{ item }}
                     </a>
                 </td>
                 <td>

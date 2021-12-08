@@ -22,7 +22,7 @@ class FolioFixtures extends Fixture implements DependentFixtureInterface {
     public function load(ObjectManager $em) : void {
         for ($i = 1; $i <= 4; $i++) {
             $fixture = new Folio();
-            $fixture->setPageNumber('PageNumber ' . $i);
+            $fixture->setPageNumber($i);
             $fixture->setStatus('Status ' . $i);
             $fixture->setText("<p>This is paragraph {$i}</p>");
             $fixture->setHocr("<p>This is paragraph {$i}</p>");

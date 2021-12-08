@@ -44,10 +44,9 @@ class ScrapbookRepository extends ServiceEntityRepository {
      * @return Collection|Scrapbook[]
      */
     public function typeaheadQuery($q) {
-        throw new RuntimeException('Not implemented yet.');
         $qb = $this->createQueryBuilder('scrapbook');
-        $qb->andWhere('scrapbook.column LIKE :q');
-        $qb->orderBy('scrapbook.column', 'ASC');
+        $qb->andWhere('scrapbook.label LIKE :q');
+        $qb->orderBy('scrapbook.label', 'ASC');
         $qb->setParameter('q', "{$q}%");
 
         return $qb->getQuery()->execute();
@@ -58,37 +57,7 @@ class ScrapbookRepository extends ServiceEntityRepository {
      *
      * @return Collection|Query|Scrapbook[]
      */
-    public function searchLabelQuery($q) {
-        $qb = $this->createQueryBuilder('scrapbook');
-        $qb->addSelect('MATCH (scrapbook.label) AGAINST(:q BOOLEAN) as HIDDEN score');
-        $qb->andHaving('score > 0');
-        $qb->orderBy('score', 'DESC');
-        $qb->setParameter('q', $q);
-
-        return $qb->getQuery();
-    }
-
-    /**
-     * @param string $q
-     *
-     * @return Collection|Query|Scrapbook[]
-     */
-    public function searchDescriptionQuery($q) {
-        $qb = $this->createQueryBuilder('scrapbook');
-        $qb->addSelect('MATCH (scrapbook.description) AGAINST(:q BOOLEAN) as HIDDEN score');
-        $qb->andHaving('score > 0');
-        $qb->orderBy('score', 'DESC');
-        $qb->setParameter('q', $q);
-
-        return $qb->getQuery();
-    }
-
-    /**
-     * @param string $q
-     *
-     * @return Collection|Query|Scrapbook[]
-     */
-    public function searchLabelDescriptionQuery($q) {
+    public function searchQuery($q) {
         $qb = $this->createQueryBuilder('scrapbook');
         $qb->addSelect('MATCH (scrapbook.label, scrapbook.description) AGAINST(:q BOOLEAN) as HIDDEN score');
         $qb->andHaving('score > 0');
