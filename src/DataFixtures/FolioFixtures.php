@@ -24,7 +24,6 @@ class FolioFixtures extends Fixture implements DependentFixtureInterface {
             $fixture = new Folio();
             $fixture->setPageNumber($i);
             $fixture->setStatus('Status ' . $i);
-            $fixture->setText("<p>This is paragraph {$i}</p>");
             $fixture->setHocr("<p>This is paragraph {$i}</p>");
             $fixture->setItem($this->getReference('item.' . $i));
             $em->persist($fixture);
