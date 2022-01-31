@@ -15,10 +15,12 @@ use App\Form\ItemType;
 use App\Repository\ItemRepository;
 
 use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;
+use Nines\MediaBundle\Service\AbstractFileManager;
 use Nines\UtilBundle\Controller\PaginatorTrait;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -150,8 +152,12 @@ class ItemController extends AbstractController implements PaginatorAwareInterfa
      */
     public function edit(Request $request, Item $item) {
         $form = $this->createForm(ItemType::class, $item);
-        $form->handleRequest($request);
 
+        $form->remove('file');
+        $form->remove('public');
+        $form->remove('license');
+
+        $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('success', 'The updated item has been saved.');
