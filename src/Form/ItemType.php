@@ -36,6 +36,7 @@ class ItemType extends PdfType {
      */
     public function buildForm(FormBuilderInterface $builder, array $options, $label = null) : void {
         parent::buildForm($builder, $options);
+        $builder->remove('description');
         $builder->add('scrapbook', Select2EntityType::class, [
             'label' => 'Scrapbook',
             'class' => Scrapbook::class,
