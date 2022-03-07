@@ -227,17 +227,12 @@ class ItemTest extends ControllerBaseCase {
         $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
         $form = $formCrawler->selectButton('Save')->form([
-            'item[file]' => $upload,
-            'item[description]' => 'New Description',
-            'item[license]' => 'New License',
         ]);
 
         $this->client->submit($form);
         $this->assertTrue($this->client->getResponse()->isRedirect('/item/1'));
         $responseCrawler = $this->client->followRedirect();
         $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-        $this->assertSame(1, $responseCrawler->filter('td:contains("New Description")')->count());
-        $this->assertSame(1, $responseCrawler->filter('td:contains("New License")')->count());
     }
 
     /**
@@ -294,7 +289,6 @@ class ItemTest extends ControllerBaseCase {
 
         $form = $formCrawler->selectButton('Save')->form([
             'item[file]' => $upload,
-            'item[description]' => 'New Description',
             'item[license]' => 'New License',
             'item[public]' => 0,
         ]);
@@ -303,7 +297,6 @@ class ItemTest extends ControllerBaseCase {
         $this->assertTrue($this->client->getResponse()->isRedirect());
         $responseCrawler = $this->client->followRedirect();
         $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-        $this->assertSame(1, $responseCrawler->filter('td:contains("New Description")')->count());
         $this->assertSame(1, $responseCrawler->filter('td:contains("New License")')->count());
     }
 
@@ -319,7 +312,6 @@ class ItemTest extends ControllerBaseCase {
 
         $form = $formCrawler->selectButton('Save')->form([
             'item[file]' => $upload,
-            'item[description]' => 'New Description',
             'item[license]' => 'New License',
             'item[public]' => 0,
         ]);
@@ -328,7 +320,6 @@ class ItemTest extends ControllerBaseCase {
         $this->assertTrue($this->client->getResponse()->isRedirect());
         $responseCrawler = $this->client->followRedirect();
         $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-        $this->assertSame(1, $responseCrawler->filter('td:contains("New Description")')->count());
         $this->assertSame(1, $responseCrawler->filter('td:contains("New License")')->count());
     }
 
